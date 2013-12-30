@@ -5,13 +5,10 @@
  * Date: 12/27/13
  * Time: 5:04 PM
  */
-class DigestAuthentication
-{
+class DigestAuthentication {
     private $REALM = "Authentication require";
-    private $USERS = array('desktop' => 'ikea-desktop');
 
-    public function auth()
-    {
+    public function auth() {
         if (empty($_SERVER['PHP_AUTH_DIGEST']))
             $this->showAuthAlert();
         else {
@@ -20,24 +17,20 @@ class DigestAuthentication
         }
     }
 
-    private function isCredentialsValid($data)
-    {
-        $A1 = md5($data['username'] . ':' . $this->REALM . ':' . $this->USERS[$data['username']]);
+    private function isCredentialsValid($data) {
+        $A1 = md5(Configuration::get()->getAuthUser() . ':' . $this->REALM . ':' . Configuration::get()->getAuthPassword());
         $A2 = md5($_SERVER['REQUEST_METHOD'] . ':' . $data['uri']);
         $valid_response = md5($A1 . ':' . $data['nonce'] . ':' . $data['nc'] . ':' . $data['cnonce'] . ':' . $data['qop'] . ':' . $A2);
         return $data['response'] == $valid_response;
     }
 
-    private function showAuthAlert()
-    {
+    private function showAuthAlert() {
         header('HTTP/1.1 401 Unauthorized');
         header('WWW-Authenticate: Digest realm="' . $this->REALM . '",qop="auth",nonce="' . uniqid() . '",opaque="' . md5($this->REALM) . '"');
         die('Authenticate require');
     }
 
-    private function httpDigestParse($txt)
-    {
-        // защита от отсутствующих данных
+    private function httpDigestParse($txt) {
         $needed_parts = array('nonce' => 1, 'nc' => 1, 'cnonce' => 1, 'qop' => 1, 'username' => 1, 'uri' => 1, 'response' => 1);
         $data = array();
         $keys = implode('|', array_keys($needed_parts));
