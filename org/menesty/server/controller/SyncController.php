@@ -15,12 +15,25 @@ class SyncController {
         $jsonRawData = file_get_contents("test.txt");
 
         var_dump(json_decode($jsonRawData));
+
+        //before update
+    }
+
+    private function readStreamData(){
+        return Configuration::get()->isDevMode() ? file_get_contents("test.txt") : file_get_contents('php://input');
     }
 
     public function update() {
-        $rawData = file_get_contents('php://input');
+        $rawData = $this->readStreamData();
 
-        file_put_contents("test.txt", $rawData);
+        $jsonData = json_decode($rawData);
+        if(is_array($jsonData) && sizeof($jsonData) > 0) {
+          //clear data related to orderId
+          $jsonData[0]->orderId;
+
+
+        }
+        //file_put_contents("test.txt", $rawData);
         //json_decode($rawData);
 
         echo __METHOD__ . "<br />";

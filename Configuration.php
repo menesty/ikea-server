@@ -26,9 +26,21 @@ class Configuration {
 
     private $authPassword = "ikea-desktop";
 
+    const DEV_MODE = "dev";
+
+    const PROD_MODE = "prod";
+
+    private $mode = Configuration::DEV_MODE;
+
+    private $db = null;
+
     private function __construct() {
         $this->siteRoot = $_SERVER["DOCUMENT_ROOT"];
         $this->controllerPath = $this->siteRoot . DIRECTORY_SEPARATOR . "org" . DIRECTORY_SEPARATOR . "menesty" . DIRECTORY_SEPARATOR . "server" . DIRECTORY_SEPARATOR . "controller";
+    }
+
+    public function isDevMode(){
+        return $this->mode == Configuration::DEV_MODE;
     }
 
     public static function get() {
@@ -73,4 +85,5 @@ class Configuration {
     public function getDbDriver() {
         return $this->dbDriver;
     }
-} 
+
+}
