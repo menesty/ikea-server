@@ -6,7 +6,7 @@ $digestAuthentication = new DigestAuthentication();
 $digestAuthentication->auth();
 
 include_once("org/menesty/server/Router.php");
-
+include_once("org/menesty/server/Database.php");
 
 $router = new Router();
 $router->delegate();

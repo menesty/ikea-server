@@ -25,7 +25,7 @@ CREATE TABLE `paragon_item` (
 
 CREATE TABLE `warehouse_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `originalProductNumber` varchar(10) DEFAULT NULL,
+  `productId` varchar(10) DEFAULT NULL,
   `productNumber` varchar(45) DEFAULT NULL,
   `price` decimal(8,2) DEFAULT NULL,
   `count` decimal(8,2) DEFAULT NULL,
