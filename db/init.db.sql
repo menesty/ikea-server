@@ -1,3 +1,5 @@
+CREATE SCHEMA `u532766986_ikea` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
+
 CREATE TABLE `driver` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -35,9 +37,8 @@ CREATE TABLE `warehouse_item` (
   `shortName` varchar(255) DEFAULT NULL,
   `allowed` bit(1) DEFAULT b'1',
   `orderId` int(11) DEFAULT NULL,
-  `invoicePdf` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `counterparty` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

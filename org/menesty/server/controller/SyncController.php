@@ -1,33 +1,28 @@
 <?php
-include_once("../service/WarehouseItemService.php");
+include_once(Configuration::get()->getClassPath() . "/service/WarehouseItemService.php");
 
 /**
  * User: Menesty
  * Date: 12/28/13
  * Time: 6:13 PM
  */
-class SyncController
-{
+class SyncController {
 
-    public function __construct()
-    {
+    public function __construct() {
         echo __FILE__ . "<br />";
     }
 
-    public function view()
-    {
+    public function view() {
         var_dump(json_decode($this->readStreamData()));
 
         //before update
     }
 
-    private function readStreamData()
-    {
-        return Configuration::get()->isDevMode() ? file_get_contents("test.txt") : file_get_contents('php://input');
+    private function readStreamData() {
+        return Configuration::get()->isDevMode() ? file_get_contents("input.update.json") : file_get_contents('php://input');
     }
 
-    public function update()
-    {
+    public function update() {
         $warehouseItemService = new WarehouseItemService();
         $rawData = $this->readStreamData();
 

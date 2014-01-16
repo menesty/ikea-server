@@ -36,10 +36,15 @@ class Configuration {
 
     private function __construct() {
         $this->siteRoot = $_SERVER["DOCUMENT_ROOT"];
-        $this->controllerPath = $this->siteRoot . DIRECTORY_SEPARATOR . "org" . DIRECTORY_SEPARATOR . "menesty" . DIRECTORY_SEPARATOR . "server" . DIRECTORY_SEPARATOR . "controller";
+        $this->classPath = $this->siteRoot . DIRECTORY_SEPARATOR . "org" . DIRECTORY_SEPARATOR . "menesty" . DIRECTORY_SEPARATOR . "server" . DIRECTORY_SEPARATOR;
+        $this->controllerPath = $this->classPath . DIRECTORY_SEPARATOR . "controller";
     }
 
-    public function isDevMode(){
+    public function getClassPath() {
+        return $this->classPath;
+    }
+
+    public function isDevMode() {
         return $this->mode == Configuration::DEV_MODE;
     }
 

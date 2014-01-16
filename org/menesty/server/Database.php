@@ -14,11 +14,11 @@ class Database
 
     private function __construct()
     {
-        $connectionUrl = Configuration::get()->getDbDriver() . ":host=" . Configuration::get()->getDbHost() . "dbname=" . Configuration::get()->getDbName();
+        $connectionUrl = Configuration::get()->getDbDriver() . ":host=" . Configuration::get()->getDbHost() . ";dbname=" . Configuration::get()->getDbName();
         try {
             $this->connection = new PDO($connectionUrl, Configuration::get()->getDbUser(), Configuration::get()->getDbPassword());
         } catch (Exception $e) {
-            error_log("Error db connection :" . $e->getMessage(), 3, "errors.log");
+            error_log("Error db connection :" . $e->getMessage()."\n", 3, "errors.log");
         }
 
     }
