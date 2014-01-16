@@ -17,8 +17,9 @@ class Database
         $connectionUrl = Configuration::get()->getDbDriver() . ":host=" . Configuration::get()->getDbHost() . ";dbname=" . Configuration::get()->getDbName();
         try {
             $this->connection = new PDO($connectionUrl, Configuration::get()->getDbUser(), Configuration::get()->getDbPassword());
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, Configuration::get()->isDevMode() ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_SILENT);
         } catch (Exception $e) {
-            error_log("Error db connection :" . $e->getMessage()."\n", 3, "errors.log");
+            error_log("Error db connection :" . $e->getMessage() . "\n", 3, "errors.log");
         }
 
     }
