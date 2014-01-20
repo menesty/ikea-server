@@ -13,32 +13,37 @@ CREATE TABLE `paragon` (
   `createdDate` datetime DEFAULT NULL,
   `order_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `paragon_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pargon_id` int(11) DEFAULT NULL,
-  `productNumber` varchar(45) DEFAULT NULL,
+  `paragonId` int(11) DEFAULT NULL,
+  `productNumber` varchar(45) NOT NULL,
   `count` decimal(8,2) DEFAULT NULL,
+  `price` decimal(8,2) DEFAULT NULL,
   `shortName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `warehouse_item` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `productId` varchar(10) DEFAULT NULL,
-  `productNumber` varchar(45) DEFAULT NULL,
-  `price` decimal(8,2) DEFAULT NULL,
-  `count` decimal(8,2) DEFAULT NULL,
+  `productId` varchar(10) NOT NULL,
+  `productNumber` varchar(45) NOT NULL,
   `weight` decimal(8,3) DEFAULT NULL,
   `zestav` tinyint(4) DEFAULT '0',
-  `visible` tinyint(4) DEFAULT '1',
   `shortName` varchar(255) DEFAULT NULL,
-  `allowed` tinyint(4) DEFAULT '1',
   `orderId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+  KEY `productNumber` (`productNumber`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `warehouse` (
+  `productNumber` varchar(45) NOT NULL,
+  `count` decimal(8,2) DEFAULT NULL,
+  `price` decimal(8,2) DEFAULT NULL,
+  `visible` tinyint(4) DEFAULT '1',
+  `allowed` tinyint(4) DEFAULT '1',
+  KEY `productNumber` (`productNumber`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `counterparty` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

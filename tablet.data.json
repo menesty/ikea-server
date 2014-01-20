@@ -1,12 +1,25 @@
 {
-    "driver": "id",
+    "driverId": "id",
     "paragons": [
         {
-            "userId": "id",
+            "paragonId": 0,
+            "userId": 0,
             "items": [
                 {
-                    "productId":"productId",
-                    "count": "count"
+                    "productNumber": "IKEA_00064662_49",
+                    "price": 2.49,
+                    "count": 1.00
+                }
+            ]
+        },
+        {
+            "paragonId": 0,
+            "userId": 0,
+            "items": [
+                {
+                    "productNumber": "IKEA_00069725_49",
+                    "price": 49.99,
+                    "count": 1.00
                 }
             ]
         }

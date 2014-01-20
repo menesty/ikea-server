@@ -1,50 +1,39 @@
 <?php
-include_once(Configuration::get()->getClassPath() . "/service/WarehouseItemService.php");
+include_once(Configuration::get()->getClassPath() . "service/WarehouseService.php");
 
 /**
  * User: Menesty
  * Date: 12/28/13
  * Time: 6:13 PM
  */
-class SyncController
-{
+class SyncController {
 
-    public function __construct()
-    {
+    public function __construct() {
         echo __FILE__ . "<br />";
     }
 
-    public function view()
-    {
+    public function view() {
         var_dump(json_decode($this->readStreamData()));
 
         //before update
     }
 
-    public function load()
-    {
-        $warehouseItemService = new WarehouseItemService();
-        $warehouseItemService->load();
-    }
 
-    private function readStreamData()
-    {
+    private function readStreamData() {
         return Configuration::get()->isDevMode() ? file_get_contents("input.update.json") : file_get_contents('php://input');
     }
 
-    public function update()
-    {
-        $warehouseItemService = new WarehouseItemService();
-        $rawData = $this->readStreamData();
+    public function update() {
+        $jsonData = json_decode($this->readStreamData());
 
-        $jsonData = json_decode($rawData);
+        if (!is_array($jsonData))
+            return;
 
+        $warehouseItemService = new WarehouseService();
         //clear order data if exist in db
-        if (is_array($jsonData) && sizeof($jsonData) > 0)
+        if (sizeof($jsonData) > 0)
             $warehouseItemService->clearByOrderId($jsonData[0]->orderId);
 
         $warehouseItemService->insertData($jsonData);
-
-        echo __METHOD__ . "<br />";
     }
 } 
