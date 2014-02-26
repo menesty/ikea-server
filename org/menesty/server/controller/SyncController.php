@@ -20,7 +20,7 @@ class SyncController {
 
 
     private function readStreamData() {
-        return Configuration::get()->isDevMode() ? file_get_contents("input.update.json") : file_get_contents('php://input');
+        return file_get_contents('php://input');
     }
 
     public function update() {
