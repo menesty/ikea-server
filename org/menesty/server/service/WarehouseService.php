@@ -21,8 +21,8 @@ class WarehouseService {
 
     public function createParagon(&$paragon) {
         $connection = Database::get()->getConnection();
-        $st = $connection->prepare("INSERT INTO warehouse (`driver_id`,`counterparty_id`,`createdDate`,`order_id`) VALUES (:driver_id, :userId, :createdDate, :order_id)");
-        $data = array("driver_id" => $paragon->driverId, "counterparty_id" => $paragon->userId, "createdDate" => $paragon->createdDate, "order_id" => $paragon->orderId);
+        $st = $connection->prepare("INSERT INTO paragon (`driver_id`,`counterparty_id`,`createdDate`,`order_id`) VALUES (:driver_id, :userId, CURDATE(), :order_id)");
+        $data = array("driver_id" => $paragon->driverId, "userId" => $paragon->userId, "order_id" => $paragon->orderId);
         $st->execute($data);
         $paragon->id = $connection->lastInsertId();
     }
@@ -35,7 +35,7 @@ class WarehouseService {
 
     public function loadStoreItem($productNumber) {
         $connection = Database::get()->getConnection();
-        $st = $connection->query('SELECT item.`productId`, w.`productNumber`,w.`price`, sum(w.`count`) as `count` ,item.`weight`, item.`zestav`,item.`shortName`,w.`allowed`,item.`orderId`, w.`visible` from warehouse w left join warehouse_item item on(w.`productNumber` = item.`productNumber`) group by w.`productNumber`, w.`visible`, w.`allowed`, w.`price` having sum(w.`count`)>0 where w.`productNumber` = :productNumber and w.visible = 1 and w.allowed = 1 limit 1');
+        $st = $connection->prepare('SELECT item.`productId`, w.`productNumber`,w.`price`, sum(w.`count`) as `count` ,item.`weight`, item.`zestav`,item.`shortName`,w.`allowed`,item.`orderId`, w.`visible` from warehouse w left join warehouse_item item on(w.`productNumber` = item.`productNumber`) where w.`productNumber` = :productNumber and w.visible = 1 and w.allowed = 1  group by w.`productNumber`, w.`visible`, w.`allowed`, w.`price` having sum(w.`count`) > 0 limit 1;');
         $st->bindParam("productNumber", $productNumber);
         $st->setFetchMode(PDO::FETCH_CLASS, 'WarehouseItem');
         return $st->fetch();
@@ -59,9 +59,18 @@ class WarehouseService {
     private function insertWarehouseItem(array &$items) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare("INSERT INTO warehouse_item (`productId`,`productNumber`,`weight`,`zestav`,`shortName`,`orderId`) VALUES (:productId, :productNumber, :weight, :zestav, :shortName, :orderId)");
+        $countSt = $connection->prepare("select count(productNumber) from  warehouse_item where productNumber = :productNumber");
+
         foreach ($items as $item) {
-            $data = array("zestav" => (int)$item->zestav, "productId" => $item->productId, "productNumber" => $item->productNumber, "weight" => $item->weight, "shortName" => $item->shortName, "orderId" => $item->orderId);
-            $st->execute($data);
+            //check if information already exist
+            $countSt->bindParam("productNumber", $item->productNumber);
+            $countSt->execute();
+            $row = $countSt->fetch(PDO::FETCH_NUM);
+
+            if ((int)$row[0] == 0) {
+                $data = array("zestav" => (int)$item->zestav, "productId" => $item->productId, "productNumber" => $item->productNumber, "weight" => $item->weight, "shortName" => $item->shortName, "orderId" => $item->orderId);
+                $st->execute($data);
+            }
         }
     }
 

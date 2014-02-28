@@ -24,7 +24,7 @@ CREATE TABLE `paragon_item` (
   `price` decimal(8,2) DEFAULT NULL,
   `shortName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `warehouse_item` (
   `productId` varchar(10) NOT NULL,

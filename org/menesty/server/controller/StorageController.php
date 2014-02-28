@@ -1,5 +1,6 @@
 <?php
 include_once(Configuration::get()->getClassPath() . "service/WarehouseService.php");
+include_once(Configuration::get()->getClassPath() . "domain/ParagonItem.php");
 
 /**
  * User: Menesty
@@ -11,29 +12,33 @@ class StorageController {
     }
 
     private function readStreamData() {
-        return file_get_contents('php://input');
+        return file_get_contents("tablet.data.json");//file_get_contents('php://input');
     }
 
     public function executeExport() {
         //handle only post request
-        $method = $_SERVER['REQUEST_METHOD'];
+       /* $method = $_SERVER['REQUEST_METHOD'];
 
         if($method != "POST")
-            return "";
+            return "";*/
 
-        $jsonData = json_decode($this->readStreamData());
+        $data = $this->readStreamData();
+        error_log("executeExport :" . $data . "\n", 3, "execute_export.log");
 
-        echo $jsonData;
+        $jsonData = json_decode($data);
 
         if (!is_object($jsonData) || !is_array($jsonData->paragons))
             return;
 
         $warehouseService = new WarehouseService();
         $paragons = (array)$jsonData->paragons;
+        $driverId = $jsonData->driverId;
 
         foreach ($paragons as $paragon) {
-            if (!property_exists($paragon, 'id') || $paragon->id == 0)
+            if (!property_exists($paragon, 'id') || $paragon->id == 0) {
+                $paragon->driverId = $driverId;
                 $warehouseService->createParagon($paragon);
+            }
 
             foreach ($paragon->items as $item) {
                 $storeItem = $warehouseService->loadStoreItem($item->productNumber);
@@ -58,4 +63,4 @@ class StorageController {
         echo json_encode($warehouseItemService->load());
     }
 
-} 
+}
