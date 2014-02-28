@@ -15,7 +15,15 @@ class StorageController {
     }
 
     public function executeExport() {
+        //handle only post request
+        $method = $_SERVER['REQUEST_METHOD'];
+
+        if($method != "POST")
+            return "";
+
         $jsonData = json_decode($this->readStreamData());
+
+        echo $jsonData;
 
         if (!is_object($jsonData) || !is_array($jsonData->paragons))
             return;
