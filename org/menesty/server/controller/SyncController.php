@@ -24,6 +24,8 @@ class SyncController {
     }
 
     public function update() {
+        $data = $this->readStreamData();
+        error_log("update :" . $data . "\n", 3, "server_update.log");
         $jsonData = json_decode($this->readStreamData());
 
         if (!is_array($jsonData))
