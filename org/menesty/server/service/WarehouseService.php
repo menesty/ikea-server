@@ -19,20 +19,6 @@ class WarehouseService {
         $st->execute((array)$item);
     }
 
-    public function createParagon(&$paragon) {
-        $connection = Database::get()->getConnection();
-        $st = $connection->prepare("INSERT INTO paragon (`driver_id`,`counterparty_id`,`createdDate`,`order_id`) VALUES (:driver_id, :userId, CURDATE(), :order_id)");
-        $data = array("driver_id" => $paragon->driverId, "userId" => $paragon->userId, "order_id" => $paragon->orderId);
-        $st->execute($data);
-        $paragon->id = $connection->lastInsertId();
-    }
-
-    public function createParagonItem(&$paragonItem) {
-        $connection = Database::get()->getConnection();
-        $st = $connection->prepare("INSERT INTO paragon_item (`paragonId`,`productNumber`,`count`,`price`,`shortName`) VALUES (:paragonId, :productNumber, :count, :price, :shortName)");
-        $st->execute((array)$paragonItem);
-    }
-
     public function loadStoreItem($productNumber) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare('SELECT item.`productId`, w.`productNumber`,w.`price`, sum(w.`count`) as `count` ,item.`weight`, item.`zestav`,item.`shortName`,w.`allowed`,item.`orderId`, w.`visible` from warehouse w left join warehouse_item item on(w.`productNumber` = item.`productNumber`) where w.`productNumber` = :productNumber and w.visible = 1 and w.allowed = 1  group by w.`productNumber`, w.`visible`, w.`allowed`, w.`price` having sum(w.`count`) > 0 limit 1;');

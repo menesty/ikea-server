@@ -1,6 +1,6 @@
 <?php
 include_once(Configuration::get()->getClassPath() . "service/WarehouseService.php");
-include_once(Configuration::get()->getClassPath() . "domain/ParagonItem.php");
+include_once(Configuration::get()->getClassPath() . "service/ParagonService.php");
 
 /**
  * User: Menesty
@@ -17,10 +17,10 @@ class StorageController {
 
     public function executeExport() {
         //handle only post request
-       /* $method = $_SERVER['REQUEST_METHOD'];
+        $method = $_SERVER['REQUEST_METHOD'];
 
         if($method != "POST")
-            return "";*/
+            return "";
 
         $data = $this->readStreamData();
         error_log("executeExport :" . $data . "\n", 3, "execute_export.log");
@@ -28,16 +28,25 @@ class StorageController {
         $jsonData = json_decode($data);
 
         if (!is_object($jsonData) || !is_array($jsonData->paragons))
-            return;
+            return "";
 
         $warehouseService = new WarehouseService();
+        $paragonService = new ParagonService();
+
         $paragons = (array)$jsonData->paragons;
         $driverId = $jsonData->driverId;
 
         foreach ($paragons as $paragon) {
             if (!property_exists($paragon, 'id') || $paragon->id == 0) {
                 $paragon->driverId = $driverId;
-                $warehouseService->createParagon($paragon);
+                $price = 0;
+
+                foreach ($paragon->items as $item)
+                   $price += (double)$item->price;
+
+                $paragon->price = $price;
+
+                $paragonService->createParagon($paragon);
             }
 
             foreach ($paragon->items as $item) {
@@ -53,7 +62,7 @@ class StorageController {
                 $paragonItem->productNumber = $item->productNumber;
                 $paragonItem->shortName = $storeItem->shortName;
 
-                $warehouseService->createParagonItem($paragonItem);
+                $paragonService->createParagonItem($paragonItem);
             }
         }
     }
@@ -61,6 +70,11 @@ class StorageController {
     public function load() {
         $warehouseItemService = new WarehouseService();
         echo json_encode($warehouseItemService->load());
+    }
+
+    public function paragons() {
+        $paragonService = new ParagonService();
+        echo json_encode($paragonService->loadParagons());
     }
 
 }
