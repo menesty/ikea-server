@@ -12,7 +12,7 @@ class StorageController {
     }
 
     private function readStreamData() {
-        return file_get_contents("tablet.data.json");//file_get_contents('php://input');
+        return file_get_contents('php://input');
     }
 
     public function executeExport() {
