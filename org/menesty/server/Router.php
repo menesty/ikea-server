@@ -21,7 +21,13 @@ class Router {
             if (!method_exists($controllerInstance, $action))
                 throw new BadMethodCallException($action);
 
-            $controllerInstance->$action();
+
+
+/*            $method = new ReflectionMethod($controllerInstance, $action);
+preg_match_all('/@Path(.*?)\n/', $method->getDocComment(), $annotations);
+var_dump($annotations);*/
+
+            $controllerInstance->$action($controllerArg);
         } catch (Exception $e) {
             //init default IndexController
             echo $e->getMessage() . "<br />";

@@ -77,4 +77,10 @@ class StorageController {
         echo json_encode($paragonService->loadParagons());
     }
 
+    /**
+     * @Path({id}/{paragonId})
+     */
+    public function paragon(){
+    }
+
 }
