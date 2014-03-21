@@ -78,9 +78,23 @@ class StorageController {
     }
 
     /**
-     * @Path({id}/{paragonId})
+     * @Path({id}/{action})
      */
-    public function paragon(){
+    public function paragon($id, $action){
+        $paragonService = new ParagonService();
+
+        $items = $paragonService->loadParagonItems($id);
+
+        $action = strtolower($action);
+        switch($action) {
+            case "epp" :
+                header('Content-Type: text/html; charset=ISO-8859-2');
+                $data = $paragonService->generateEpp($items);
+                echo mb_convert_encoding($data, "ISO-8859-2", "UTF-8");
+                break;
+            default :
+                echo json_encode($items);
+        }
     }
 
 }

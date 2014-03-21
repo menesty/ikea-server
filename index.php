@@ -12,14 +12,4 @@ include_once("org/menesty/server/Database.php");
 $router = new Router();
 $router->delegate();
 
-/*
- driver
-id
- */
-
-//http://habrahabr.ru/post/31270/
-//http://www.php.net/manual/en/function.error-log.php
-
-
-
 ?>
