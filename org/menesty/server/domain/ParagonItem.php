@@ -56,7 +56,7 @@ class ParagonItem {
     }
 
 
-private function round($value) {
+    private function round($value) {
         return round($value, 2, PHP_ROUND_HALF_UP);
     }
 
