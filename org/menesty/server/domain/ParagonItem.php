@@ -20,15 +20,15 @@ class ParagonItem {
     }
 
     public function getMarginPercent() {
-        return round(($this->getMargin() / $this->getRetail()) * 100);
+        return $this->round(($this->getMargin() / $this->getRetail()) * 100);
     }
 
     public function getRetail() {
-        return round($this->getPrice() * 1.02);
+        return $this->round($this->getPrice() * 1.02);
     }
 
     public function getPrice() {
-        return round($this->price / $this->getWatCof());
+        return $this->round($this->price / $this->getWatCof());
     }
 
     private function getWatCof() {
@@ -36,11 +36,11 @@ class ParagonItem {
     }
 
     public function getMargin() {
-        return round($this->getRetail() - $this->getPrice());
+        return $this->round($this->getRetail() - $this->getPrice());
     }
 
     public function getPriceWat() {
-        return round($this->price);
+        return $this->round($this->price);
     }
 
     public function getPriceWatTotal() {
@@ -48,11 +48,11 @@ class ParagonItem {
     }
 
     public function getPriceTotal() {
-        return round($this->getPrice() * $this->count);
+        return $this->round($this->getPrice() * $this->count);
     }
 
     public function getTaxPay() {
-        return round(($this->getPriceWat() - $this->getPrice()) * $this->count);
+        return $this->round(($this->getPriceWat() - $this->getPrice()) * $this->count);
     }
 
 
@@ -63,7 +63,11 @@ class ParagonItem {
     public function format($value) {
         $valueStr = $value ."";
 
-        $pos = strlen($valueStr) - (strpos($valueStr, ".") + 1);
+        $pointPos = strpos($valueStr, ".");
+        $pos = $pointPos? strlen($valueStr) - $pointPos - 1 : 0;
+
+        if($pos == 0)
+            $valueStr .=".";
 
         for ($i = 4 - $pos; $i > 0; $i--)
             $valueStr .= "0";
