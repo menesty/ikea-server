@@ -19,10 +19,10 @@ class ParagonService {
         $paragon->id = $connection->lastInsertId();
     }
 
-    public function createParagonItem(&$paragonItem) {
+    public function createParagonItem(&$item) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare("INSERT INTO paragon_item (`paragonId`,`productNumber`,`count`,`price`,`shortName`) VALUES (:paragonId, :productNumber, :count, :price, :shortName)");
-        $st->execute((array)$paragonItem);
+        $st->execute(array("paragonId" => $item->paragonId, "productNumber" => $item->productNumber, "count" => $item->count, "price" => $item->price, "shortName" => $item->shortName));
     }
 
     public function loadParagons(){

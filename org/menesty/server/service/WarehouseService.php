@@ -16,7 +16,7 @@ class WarehouseService {
     public function exportItem($item) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare("INSERT INTO warehouse (`productNumber`,`count`,`price`) VALUES (:productNumber, :count, :price)");
-        $st->execute((array)$item);
+        $st->execute(array("productNumber" => $item->productNumber, "count" => $item->count, "price" =>$item->price));
     }
 
     public function loadStoreItem($productNumber) {

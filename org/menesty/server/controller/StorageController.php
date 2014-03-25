@@ -42,7 +42,7 @@ class StorageController {
                 $price = 0;
 
                 foreach ($paragon->items as $item)
-                   $price += (double)$item->price;
+                    $price += ((double)$item->price * (double)$item->count);
 
                 $paragon->price = $price;
 
@@ -50,7 +50,6 @@ class StorageController {
             }
 
             foreach ($paragon->items as $item) {
-                $storeItem = $warehouseService->loadStoreItem($item->productNumber);
                 $count = $item->count;
                 $item->count = $count * -1;
                 $warehouseService->exportItem($item);
@@ -60,7 +59,7 @@ class StorageController {
                 $paragonItem->paragonId = $paragon->id;
                 $paragonItem->price = $item->price;
                 $paragonItem->productNumber = $item->productNumber;
-                $paragonItem->shortName = $storeItem->shortName;
+                $paragonItem->shortName = $item->shortName;
 
                 $paragonService->createParagonItem($paragonItem);
             }
