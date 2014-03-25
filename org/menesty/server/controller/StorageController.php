@@ -54,12 +54,14 @@ class StorageController {
                 $item->count = $count * -1;
                 $warehouseService->exportItem($item);
 
+                $shortName = $warehouseService->loadShortName($item->productNumber);
+
                 $paragonItem = new ParagonItem();
                 $paragonItem->count = $count;
                 $paragonItem->paragonId = $paragon->id;
                 $paragonItem->price = $item->price;
                 $paragonItem->productNumber = $item->productNumber;
-                $paragonItem->shortName = $item->shortName;
+                $paragonItem->shortName = $shortName;
 
                 $paragonService->createParagonItem($paragonItem);
             }

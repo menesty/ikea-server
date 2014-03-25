@@ -24,6 +24,16 @@ class WarehouseService {
         $st = $connection->prepare('SELECT item.`productId`, w.`productNumber`,w.`price`, sum(w.`count`) as `count` ,item.`weight`, item.`zestav`,item.`shortName`,w.`allowed`,item.`orderId`, w.`visible` from warehouse w left join warehouse_item item on(w.`productNumber` = item.`productNumber`) where w.`productNumber` = :productNumber and w.visible = 1 and w.allowed = 1  group by w.`productNumber`, w.`visible`, w.`allowed`, w.`price` having sum(w.`count`) > 0 limit 1;');
         $st->bindParam("productNumber", $productNumber);
         $st->setFetchMode(PDO::FETCH_CLASS, 'WarehouseItem');
+        $st->execute();
+        return $st->fetch();
+    }
+
+    public function loadShortName($productNumber) {
+        $connection = Database::get()->getConnection();
+        $st = $connection->prepare('SELECT shortName FROM warehouse_item where productNumber = :productNumber limit 1');
+        $st->bindParam("productNumber", $productNumber);
+        $st->setFetchMode(PDO::FETCH_COLUMN, 0);
+        $st->execute();
         return $st->fetch();
     }
 
