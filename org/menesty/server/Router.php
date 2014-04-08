@@ -15,6 +15,7 @@ class Router {
             $controllerInstance = $controllerData[0];
             $controllerArg = $controllerData[1];
             $action = "defaultAction";
+
             if (sizeof($controllerArg) > 0 && method_exists($controllerInstance, $controllerArg[0]))
                 $action = array_shift($controllerArg);
 

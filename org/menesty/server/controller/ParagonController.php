@@ -10,49 +10,49 @@ include_once(Configuration::get()->getClassPath() . "service/ParagonService.php"
 
 class ParagonController extends AbstractController {
     private $warehouseService;
+    private $paragonService;
 
     public function __construct() {
         $this->warehouseService = new WarehouseService();
+        $this->paragonService = new ParagonService();
     }
 
-      public function executeExport(){
-          if ($_SERVER['REQUEST_METHOD'] != "POST")
-              throw new Exception($_SERVER['REQUEST_METHOD'] . " method not supported");
+    public function executeExport() {
+        if ($_SERVER['REQUEST_METHOD'] != "POST")
+            throw new Exception($_SERVER['REQUEST_METHOD'] . " method not supported");
 
-          $data = $this->readStreamData();
+        $data = $this->readStreamData();
 
-          $json = json_decode($data);
+        $json = json_decode($data);
 
-          if (!is_object($json) || !is_array($json->paragons))
-              return "";
+        if (!is_object($json) || !is_array($json->paragons))
+            return "";
 
-          $paragonService = new ParagonService();
+        $paragonService = new ParagonService();
 
-          $paragons = (array)$json->paragons;
-          $driverId = $json->driverId;
+        $paragons = (array)$json->paragons;
+        $driverId = $json->driverId;
 
-          //check if product is available
-          $allowedParagons = $this->validatePragons($driverId, $paragons);
+        //check if product is available
+        $allowedParagons = $this->validatePragons($driverId, $paragons);
 
-          if (sizeof($allowedParagons) > 0) {
-               foreach ($allowedParagons as $paragon){
-                   $paragonService->createParagon($paragon);
+        if (sizeof($allowedParagons) > 0) {
+            foreach ($allowedParagons as $paragon) {
+                $paragonService->createParagon($paragon);
 
-                   foreach ($paragon->items as $item) {
-                       $count = $item->count;
-                       $item->count = $count * -1;
+                foreach ($paragon->items as $item) {
+                    $count = $item->count;
+                    $item->count = $count * -1;
 
-                       $this->warehouseService->exportItem($item);
+                    $this->warehouseService->exportItem($item);
 
-                       $item->count = $count;
+                    $item->count = $count;
 
-                       $paragonService->createParagonItem($paragonItem);
-                   }
-               }
-          }
-
-
-      }
+                    $paragonService->createParagonItem($paragonItem);
+                }
+            }
+        }
+    }
 
     private function validatePragons($driverId, $paragons) {
         $allowedParagons = array();
@@ -89,5 +89,42 @@ class ParagonController extends AbstractController {
         }
 
         return $allowedParagons;
+    }
+
+    public function defaultAction() {
+        echo json_encode($this->paragonService->loadParagons());
+    }
+
+    /**
+     * @Path({id}/{action})
+     */
+    public function details($id, $action){
+        $items = $this->paragonService->loadParagonItems($id);
+
+        $action = strtolower($action);
+
+        switch($action) {
+            case "epp" :
+                header('Content-Type: text/html; charset=ISO-8859-2');
+                $data = $this->paragonService->generateEpp($items);
+                echo mb_convert_encoding($data, "ISO-8859-2", "UTF-8");
+                break;
+            default :
+                echo json_encode($items);
+        }
+    }
+
+    /**
+     * @Path({id})
+     */
+    public function cancel($id){
+        $items = $this->paragonService->loadParagonItems($id);
+
+        foreach($items as $item) {
+            $this->warehouseService->deleteBy($item->productNumber, $item->count * -1, $item->price);
+            $this->paragonService->deleteItemById($item->id);
+        }
+
+        $this->paragonService->deleteById($id);
     }
 }

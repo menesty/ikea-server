@@ -7,9 +7,13 @@
  */
 class ParagonItem {
     public $paragonId;
+
     public $productNumber;
+
     public $count;
+
     public $price;
+
     public $shortName;
 
     public $wat = 23;

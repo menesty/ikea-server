@@ -13,6 +13,13 @@ class WarehouseService {
         $connection->prepare("delete from warehouse")->execute();
     }
 
+    public function deleteBy($productNumber, $count, $price) {
+        $connection = Database::get()->getConnection();
+        $st = $connection->prepare("DELETE FROM warehouse where `productNumber` = :productNumber and `count` = :count and `price` = :price");
+        $st->execute(array("productNumber" => $productNumber, "count" => $count, "price" =>$price));
+        return $st->rowCount() > 0;
+    }
+
     public function exportItem($item) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare("INSERT INTO warehouse (`productNumber`,`count`,`price`) VALUES (:productNumber, :count, :price)");

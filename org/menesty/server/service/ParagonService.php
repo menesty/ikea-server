@@ -29,6 +29,7 @@ class ParagonService {
         $connection = Database::get()->getConnection();
         $st = $connection->query("select * from paragon");
         $st->setFetchMode(PDO::FETCH_CLASS, 'Paragon');
+
         return $st->fetchAll();
     }
 
@@ -37,7 +38,24 @@ class ParagonService {
         $st = $connection->prepare("select * from paragon_item where `paragonId` = ?");
         $st->setFetchMode(PDO::FETCH_CLASS, 'ParagonItem');
         $st->execute(array($id));
+
         return $st->fetchAll();
+    }
+
+    public function deleteItemById($id){
+        $connection = Database::get()->getConnection();
+        $st = $connection->prepare("DELETE FROM paragon_item where `id` = ?");
+        $st->execute(array($id));
+
+        return $st->rowCount() > 0;
+    }
+
+    public function deleteById($id) {
+        $connection = Database::get()->getConnection();
+        $st = $connection->prepare("DELETE FROM paragon where `id` = ?");
+        $st->execute(array($id));
+
+        return $st->rowCount() > 0;
     }
 
     public function generateEpp($items){
@@ -100,4 +118,5 @@ EOT;
         ob_end_clean();
         return $page;
     }
+
 }
