@@ -10,8 +10,8 @@ class WarehouseService {
     public function clear() {
         //clear only with orderId
         $connection = Database::get()->getConnection();
-        $connection->prepare("delete from warehouse_item where productNumber in (select productNumber from warehouse where )")->execute();
-        $connection->prepare("delete from warehouse where productNumber in (select productNumber from warehouse where )")->execute();
+        $connection->prepare("delete from warehouse where productNumber in (select productNumber from warehouse_item where orderId > 0 )")->execute();
+        $connection->prepare("delete from warehouse_item where orderId > 0")->execute();
     }
 
     public function deleteBy($productNumber, $count, $price) {
