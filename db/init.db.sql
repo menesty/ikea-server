@@ -12,6 +12,7 @@ CREATE TABLE `paragon` (
   `counterparty_id` int(11) DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
   `order_id` int(11) DEFAULT NULL,
+  `price` decimal(8,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -27,7 +28,7 @@ CREATE TABLE `paragon_item` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `warehouse_item` (
-  `productId` varchar(10) NOT NULL,
+  `productId` varchar(45) NOT NULL,
   `productNumber` varchar(45) NOT NULL,
   `weight` decimal(8,3) DEFAULT NULL,
   `zestav` tinyint(4) DEFAULT '0',

@@ -47,8 +47,8 @@ class ParagonController extends AbstractController {
                     $this->warehouseService->exportItem($item);
 
                     $item->count = $count;
-
-                    $paragonService->createParagonItem($paragonItem);
+                    $item->paragonId = $paragon->id;
+                    $paragonService->createParagonItem($item);
                 }
             }
         }
@@ -75,7 +75,7 @@ class ParagonController extends AbstractController {
                     $paragonItem->price = $item->price;
                     $paragonItem->productNumber = $item->productNumber;
                     $paragonItem->shortName = $warehouseItem->shortName;
-                    $items[] = $warehouseItem;
+                    $items[] = $paragonItem;
 
                     $price += ((double)$item->price * (double)$item->count);
                 }
