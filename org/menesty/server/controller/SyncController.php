@@ -34,7 +34,7 @@ class SyncController {
         $warehouseItemService = new WarehouseService();
         //clear order data if exist in db
         if (sizeof($jsonData) > 0)
-            $warehouseItemService->clearByOrderId($jsonData[0]->orderId);
+            $warehouseItemService->clear();
 
         $warehouseItemService->insertData($jsonData);
     }

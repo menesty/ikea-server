@@ -7,15 +7,16 @@ include_once(Configuration::get()->getClassPath() . "/domain/WarehouseItem.php")
  * Time: 7:59 PM
  */
 class WarehouseService {
-    public function clearByOrderId($orderId) {
+    public function clear() {
+        //clear only with orderId
         $connection = Database::get()->getConnection();
-        $connection->prepare("delete from warehouse_item")->execute();
-        $connection->prepare("delete from warehouse")->execute();
+        $connection->prepare("delete from warehouse_item where productNumber in (select productNumber from warehouse where )")->execute();
+        $connection->prepare("delete from warehouse where productNumber in (select productNumber from warehouse where )")->execute();
     }
 
     public function deleteBy($productNumber, $count, $price) {
         $connection = Database::get()->getConnection();
-        $st = $connection->prepare("DELETE FROM warehouse where `productNumber` = :productNumber and `count` = :count and `price` = :price");
+        $st = $connection->prepare("DELETE FROM warehouse where `productNumber` = :productNumber and `count` = :count and `price` = :price limit 1");
         $st->execute(array("productNumber" => $productNumber, "count" => $count, "price" =>$price));
         return $st->rowCount() > 0;
     }
