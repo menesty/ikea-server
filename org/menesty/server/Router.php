@@ -35,14 +35,21 @@ class Router {
 
     private function getMethodArg(ReflectionMethod $method, $params){
         $args = array();
-
         foreach ($method->getParameters() as $param) {
-            if (array_key_exists($param->getName(), $params))
-                $args[] = $params[$param->getName()];
-            else if ($param->isDefaultValueAvailable())
+            if (array_key_exists($param->getName(), $params) && $params[$param->getName()] != null) {
+                //check if has default value ant rty get type to cast our value to correct type
+                if ($param->isDefaultValueAvailable()) {
+                    $defValue = $param->getDefaultValue();
+
+                    if (is_bool($defValue))
+                        $args[] = filter_var($params[$param->getName()], FILTER_VALIDATE_BOOLEAN);
+                } else
+                    $args[] = $params[$param->getName()];
+
+            } else if ($param->isDefaultValueAvailable())
                 $args[] = $param->getDefaultValue();
             else
-                throw new Exception("Parameter ". $param->getName() ." not found");
+                throw new Exception("Parameter " . $param->getName() . " not found");
         }
 
         return $args;
@@ -58,7 +65,7 @@ class Router {
 
             if (sizeof($params) > 1)
                 foreach ($params[1] as $data)
-                    $resArg[$data] = array_shift($arg);
+                    $resArg[$data] = sizeof($arg) > 0 ? array_shift($arg) : null;
         }
 
         return $resArg;
@@ -67,12 +74,14 @@ class Router {
 
     private function getController($route) {
         $pathParts = explode("/", $route);
+
         $currentPath = Configuration::get()->getControllerPath() . DIRECTORY_SEPARATOR;
         $instance = null;
 
         while ($val = array_shift($pathParts)) {
             $controllerName = ucfirst($val) . "Controller";
             $fileName = $currentPath . $controllerName . ".php";
+
             if (is_file($fileName)) {
                 if (is_readable($fileName) == false)
                     throw new Exception("File with controller not accessible :" . $fileName);
@@ -90,9 +99,16 @@ class Router {
 
 
         }
+
         if ($instance == null)
             throw new Exception("Controller not found");
 
-        return array($instance, $pathParts);
+        //filter args
+        $args = array();
+        foreach($pathParts as $arg)
+            if(trim($arg) != "")
+                $args[] = $arg;
+
+        return array($instance, $args);
     }
 }

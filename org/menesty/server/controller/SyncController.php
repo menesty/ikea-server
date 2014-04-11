@@ -23,7 +23,10 @@ class SyncController {
         return file_get_contents('php://input');
     }
 
-    public function update() {
+    /**
+     * @Path({clean})
+     */
+    public function update($clean = false) {
         $data = $this->readStreamData();
         error_log("update :" . $data . "\n", 3, "server_update.log");
         $jsonData = json_decode($this->readStreamData());
@@ -33,7 +36,7 @@ class SyncController {
 
         $warehouseItemService = new WarehouseService();
         //clear order data if exist in db
-        if (sizeof($jsonData) > 0)
+        if (sizeof($jsonData) > 0 && $clean)
             $warehouseItemService->clear();
 
         $warehouseItemService->insertData($jsonData);
