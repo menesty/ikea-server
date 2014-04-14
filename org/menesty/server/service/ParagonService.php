@@ -27,7 +27,7 @@ class ParagonService {
 
     public function loadParagons(){
         $connection = Database::get()->getConnection();
-        $st = $connection->query("select * from paragon");
+        $st = $connection->query("select * from paragon order by id desc ");
         $st->setFetchMode(PDO::FETCH_CLASS, 'Paragon');
 
         return $st->fetchAll();
