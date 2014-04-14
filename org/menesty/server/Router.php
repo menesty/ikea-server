@@ -43,6 +43,8 @@ class Router {
 
                     if (is_bool($defValue))
                         $args[] = filter_var($params[$param->getName()], FILTER_VALIDATE_BOOLEAN);
+                    else
+                        $args[] = $params[$param->getName()];
                 } else
                     $args[] = $params[$param->getName()];
 

@@ -113,7 +113,7 @@ class ParagonController extends AbstractController {
     /**
      * @Path({id}/{action})
      */
-    public function details($id, $action){
+    public function details($id, $action = ""){
         $items = $this->paragonService->loadParagonItems($id);
 
         $action = strtolower($action);
