@@ -10,6 +10,8 @@ class Configuration {
 
     private $siteRoot;
 
+    private $libPath;
+
     private $dbHost = "localhost";
 
     private $dbDriver = "mysql";
@@ -26,6 +28,8 @@ class Configuration {
 
     private $authPassword = "ikea-desktop";
 
+    private $emailAccount = array ("o.maks.78.len@gmail.com", "LenMaks78");
+
     const DEV_MODE = "dev";
 
     const PROD_MODE = "prod";
@@ -38,10 +42,20 @@ class Configuration {
         $this->siteRoot = $_SERVER["DOCUMENT_ROOT"];
         $this->classPath = $this->siteRoot . DIRECTORY_SEPARATOR . "org" . DIRECTORY_SEPARATOR . "menesty" . DIRECTORY_SEPARATOR . "server" . DIRECTORY_SEPARATOR;
         $this->controllerPath = $this->classPath . DIRECTORY_SEPARATOR . "controller";
+        $this->libPath =  $this->siteRoot . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR;
+
+    }
+
+    public function getEmailAccount(){
+        return $this->emailAccount;
     }
 
     public function getClassPath() {
         return $this->classPath;
+    }
+
+    public function getLibPath() {
+        return $this->libPath;
     }
 
     public function isDevMode() {

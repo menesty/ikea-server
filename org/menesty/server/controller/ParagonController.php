@@ -37,8 +37,10 @@ class ParagonController extends AbstractController {
         $allowedParagons = $this->validatePragons($driverId, $paragons);
 
         if (sizeof($allowedParagons) > 0) {
+            $ids = array();
             foreach ($allowedParagons as $paragon) {
                 $paragonService->createParagon($paragon);
+                $ids[] = $paragon->id;
 
                 foreach ($paragon->items as $item) {
                     $count = $item->count;
@@ -51,7 +53,20 @@ class ParagonController extends AbstractController {
                     $paragonService->createParagonItem($item);
                 }
             }
+
+            $this->sendToEmail($ids);
         }
+    }
+
+    private function sendToEmail(array $ids) {
+        $data = array();
+
+        foreach ($ids as $id) {
+            $items = $this->paragonService->loadParagonItems($id);
+            $data[$id] = $this->paragonService->generateEpp($items);
+        }
+
+        $this->paragonService->sendParagonByEmail($data);
     }
 
     private function validatePragons($driverId, $paragons) {
@@ -109,6 +124,9 @@ class ParagonController extends AbstractController {
                 $data = $this->paragonService->generateEpp($items);
                 echo mb_convert_encoding($data, "ISO-8859-2", "UTF-8");
                 break;
+            case "email" :
+                $this->sendToEmail(array($id));
+                break;
             default :
                 echo json_encode($items);
         }
@@ -127,4 +145,5 @@ class ParagonController extends AbstractController {
 
         $this->paragonService->deleteById($id);
     }
+
 }

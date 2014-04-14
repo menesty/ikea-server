@@ -58,15 +58,64 @@ class ParagonService {
         return $st->rowCount() > 0;
     }
 
+    public function sendParagonByEmail(array $paragons){
+        include_once(Configuration::get()->getLibPath() . "mail/class.phpmailer.php");
+
+        $mail = new PHPMailer(true);
+        $mail->IsSMTP();
+
+        try {
+            $mail->SMTPDebug  = false;                     // enables SMTP debug information (for testing)
+            $mail->SMTPAuth   = true;                  // enable SMTP authentication
+            $mail->SMTPSecure = "ssl";                 // sets the prefix to the servier
+            $mail->Host       = "smtp.gmail.com";      // sets GMAIL as the SMTP server
+            $mail->Port       = 465;                   // set the SMTP port for the GMAIL server
+
+            $emailAccount = Configuration::get()->getEmailAccount();
+
+            $mail->Username   = $emailAccount[0];  // GMAIL username
+            $mail->Password   = $emailAccount[1];            // GMAIL password
+
+            $mail->AddAddress('urbano_rider@yahoo.ca', 'Urbano');
+
+            $mail->SetFrom($emailAccount[0], 'Tablet Facture');
+
+            $mail->Subject = 'Paragons generated from system';
+            $mail->AltBody = 'Driver pragon!'; // optional - MsgHTML will create an alternate automatically
+            $mail->Body = 'Driver pragon!';
+
+            foreach ($paragons as $key => $value)
+                $mail->AddStringAttachment($value, "paragon_" . $key . ".epp"); // attachment
+
+            $mail->Send();
+            echo "Message Sent OK</p>\n";
+        } catch (phpmailerException $e) {
+            echo $e->errorMessage(); //Pretty error messages from PHPMailer
+        } catch (Exception $e) {
+            echo $e->getMessage(); //Boring error messages from anything else!
+        }
+    }
+
     public function generateEpp($items){
+        $totalPrice = 0;
+
+        foreach($items as $item)
+            $totalPrice += $item->price * $item->count;
+
+        $totalItem = new ParagonItem();
+        $totalItem->price = $totalPrice;
+        $totalItem->count = 1;
+
         ob_start();
 echo <<< EOT
 [INFO]\r
 "1.05",3,1250,"Subiekt GT","#29","13-05-05","Orijana Trading Poland sp. z o.o.","Warszawa","01-207","Grzybowska 85c","795-248-80-01","MAG","Główny","Magazyn główny",,1,20140314134842,20140314134842,"Szef",20140314134842,"Polska","PL",,0\r
 \r
 [NAGLOWEK]\r
-"PA",1,0,583,,,"583/03",,,,,,,,,,,,"Detal","Sprzedaø detaliczna","Warszawa",20140314000000,20140314000000,,3,0,"Detaliczna",375.9100,86.4600,462.3700,368.4900,,0.0000,,20140314000000,462.3700,462.3700,0,0,1,0,";Szef",,,0.0000,0.0000,"PLN",1.0000,,,,,0,0,0,,0.0000,,0.0000,,,0\r
-\r
+EOT;
+printf("\"PA\",1,0,583,,,\"583/03\",,,,,,,,,,,,\"Detal\",\"Sprzedaø detaliczna\",\"Warszawa\",20140314000000,20140314000000,,3,0,\"Detaliczna\",%s,%s,%s,368.4900,,0.0000,,20140314000000,%s,%s,0,0,1,0,\";Szef\",,,0.0000,0.0000,\"PLN\",1.0000,,,,,0,0,0,,0.0000,,0.0000,,,0\r\n", $totalItem->format($totalItem->getPrice()), $totalItem->format($totalItem->getTaxPay()), $totalItem->format($totalItem->getPriceWat()),/****/ $totalItem->format($totalItem->getPriceWat()), $totalItem->format($totalItem->getPriceWat()));
+echo <<< EOT
+
 [ZAWARTOSC]\r
 
 EOT;
