@@ -13,5 +13,6 @@ class Paragon {
     public $createdDate;
     public $order_id;
     public $price;
+    public $downloaded;
 
 } 

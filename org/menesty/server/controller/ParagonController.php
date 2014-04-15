@@ -122,7 +122,11 @@ class ParagonController extends AbstractController {
             case "epp" :
                 header('Content-Type: text/html; charset=ISO-8859-2');
                 $data = $this->paragonService->generateEpp($items);
+
                 echo mb_convert_encoding($data, "ISO-8859-2", "UTF-8");
+
+                $this->paragonService->markDownloaded($id);
+
                 break;
             case "email" :
                 $this->sendToEmail(array($id));

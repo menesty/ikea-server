@@ -13,6 +13,7 @@ CREATE TABLE `paragon` (
   `createdDate` datetime DEFAULT NULL,
   `order_id` int(11) DEFAULT NULL,
   `price` decimal(8,2) DEFAULT NULL,
+  `downloaded` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -54,3 +55,4 @@ CREATE TABLE `counterparty` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `paragon` ADD COLUMN `price` DECIMAL(10,3) NULL  AFTER `order_id` ;
+ALTER TABLE `paragon` ADD COLUMN `downloaded` TINYINT(4) NULL DEFAULT 0  AFTER `price` ;

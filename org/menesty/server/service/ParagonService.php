@@ -33,6 +33,14 @@ class ParagonService {
         return $st->fetchAll();
     }
 
+    public function markDownloaded($id) {
+        $connection = Database::get()->getConnection();
+        $st = $connection->prepare("update paragon set downloaded = 1 where `id` = ?");
+        $st->execute(array($id));
+
+        return $st->rowCount() > 0;
+    }
+
     public function loadParagonItems($id) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare("select * from paragon_item where `paragonId` = ?");
