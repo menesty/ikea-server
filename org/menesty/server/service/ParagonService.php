@@ -120,10 +120,11 @@ echo <<< EOT
 "1.05",3,1250,"Subiekt GT","#29","13-05-05","Orijana Trading Poland sp. z o.o.","Warszawa","01-207","Grzybowska 85c","795-248-80-01","MAG","Główny","Magazyn główny",,1,20140314134842,20140314134842,"Szef",20140314134842,"Polska","PL",,0\r
 \r
 [NAGLOWEK]\r
+
 EOT;
 printf("\"PA\",1,0,583,,,\"583/03\",,,,,,,,,,,,\"Detal\",\"Sprzedaø detaliczna\",\"Warszawa\",20140314000000,20140314000000,,3,0,\"Detaliczna\",%s,%s,%s,368.4900,,0.0000,,20140314000000,%s,%s,0,0,1,0,\";Szef\",,,0.0000,0.0000,\"PLN\",1.0000,,,,,0,0,0,,0.0000,,0.0000,,,0\r\n", $totalItem->format($totalItem->getPrice()), $totalItem->format($totalItem->getTaxPay()), $totalItem->format($totalItem->getPriceWat()),/****/ $totalItem->format($totalItem->getPriceWat()), $totalItem->format($totalItem->getPriceWat()));
 echo <<< EOT
-
+\r
 [ZAWARTOSC]\r
 
 EOT;
