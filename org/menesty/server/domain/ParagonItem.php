@@ -18,6 +18,8 @@ class ParagonItem {
 
     public $wat = 23;
 
+    public $zestav;
+
 
     public function getRetailWat() {
         return $this->round($this->getRetail() * $this->getWatCof());

@@ -25,6 +25,7 @@ CREATE TABLE `paragon_item` (
   `count` decimal(8,2) DEFAULT NULL,
   `price` decimal(8,2) DEFAULT NULL,
   `shortName` varchar(255) DEFAULT NULL,
+  `zestav` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -56,3 +57,4 @@ CREATE TABLE `counterparty` (
 
 ALTER TABLE `paragon` ADD COLUMN `price` DECIMAL(10,3) NULL  AFTER `order_id` ;
 ALTER TABLE `paragon` ADD COLUMN `downloaded` TINYINT(4) NULL DEFAULT 0  AFTER `price` ;
+ALTER TABLE `paragon_item` ADD COLUMN `zestav` tinyint(4) NULL DEFAULT 0 AFTER `shortName`;

@@ -21,8 +21,8 @@ class ParagonService {
 
     public function createParagonItem(&$item) {
         $connection = Database::get()->getConnection();
-        $st = $connection->prepare("INSERT INTO paragon_item (`paragonId`,`productNumber`,`count`,`price`,`shortName`) VALUES (:paragonId, :productNumber, :count, :price, :shortName)");
-        $st->execute(array("paragonId" => $item->paragonId, "productNumber" => $item->productNumber, "count" => $item->count, "price" => $item->price, "shortName" => $item->shortName));
+        $st = $connection->prepare("INSERT INTO paragon_item (`paragonId`,`productNumber`,`count`,`price`,`shortName`, `zestav`) VALUES (:paragonId, :productNumber, :count, :price, :shortName, :zestav)");
+        $st->execute(array("paragonId" => $item->paragonId, "productNumber" => $item->productNumber, "count" => $item->count, "price" => $item->price, "shortName" => $item->shortName, "zestav" => $item->zestav));
     }
 
     public function loadParagons(){
@@ -75,9 +75,9 @@ class ParagonService {
         try {
             $mail->SMTPDebug  = false;                     // enables SMTP debug information (for testing)
             $mail->SMTPAuth   = true;                  // enable SMTP authentication
-            $mail->SMTPSecure = "ssl";                 // sets the prefix to the servier
+            $mail->SMTPSecure = "tls";                 // sets the prefix to the servier
             $mail->Host       = "smtp.gmail.com";      // sets GMAIL as the SMTP server
-            $mail->Port       = 465;                   // set the SMTP port for the GMAIL server
+            $mail->Port       = 587;                   // set the SMTP port for the GMAIL server
 
             $emailAccount = Configuration::get()->getEmailAccount();
 
@@ -130,7 +130,7 @@ echo <<< EOT
 EOT;
 $index=1;
 foreach ($items as $item)
-printf("%s,1,\"%s\",1,0,0,1,0.0000,0.0000,\"szt.\",%s,%s,0.0000,%s,%s,23.0000,%s,%s,%s,%s,,   \r\n", $index++, $item->productNumber, $item->count, $item->count, $item->format($item->getPrice()), $item->format($item->getPriceWat()), $item->format($item->getPriceWatTotal()), $item->format($item->getTaxPay()), $item->format($item->getPriceTotal()), $item->format($item->getPriceWatTotal()));
+printf("%s,%s,\"%s\",1,0,0,1,0.0000,0.0000,\"szt.\",%s,%s,0.0000,%s,%s,23.0000,%s,%s,%s,%s,,   \r\n", $index++, ($item->zestav? 8: 1), $item->productNumber, $item->count, $item->count, $item->format($item->getPrice()), $item->format($item->getPriceWat()), $item->format($item->getPriceWatTotal()), $item->format($item->getTaxPay()), $item->format($item->getPriceTotal()), $item->format($item->getPriceWatTotal()));
 echo <<< EOT
 \r
 [NAGLOWEK]\r
@@ -140,7 +140,7 @@ echo <<< EOT
 
 EOT;
 foreach ($items as $item)
-printf("1,%s,,,%s,%s,%s,,,\"szt . \",\"23\",23.0000,\"23\",23.0000,0.0000,0.0000,,0,,,,0.0000,0,,,0,\"szt . \",0.0000,0.0000,,0,,0,0,,,,,,,,\r\n",$item->productNumber, $item->shortName, $item->shortName, $item->shortName);
+printf("%s,%s,,,%s,%s,%s,,,\"szt . \",\"23\",23.0000,\"23\",23.0000,0.0000,0.0000,,0,,,,0.0000,0,,,0,\"szt . \",0.0000,0.0000,,0,,0,0,,,,,,,,\r\n",($item->zestav? 8: 1), $item->productNumber, $item->shortName, $item->shortName, $item->shortName);
 echo <<< EOT
 \r
 [NAGLOWEK]\r
