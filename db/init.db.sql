@@ -36,8 +36,17 @@ CREATE TABLE `warehouse_item` (
   `zestav` tinyint(4) DEFAULT '0',
   `shortName` varchar(255) DEFAULT NULL,
   `orderId` int(11) DEFAULT NULL,
+  `box` tinyint(4) DEFAULT '1',
   KEY `productNumber` (`productNumber`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `warehouse_item_weight` (
+  `productId` varchar(45) NOT NULL,
+  `weight` decimal(8,3) DEFAULT NULL,
+  `box` tinyint(4) DEFAULT '1',
+  KEY `productId` (`productId`,`box`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE `warehouse` (
   `productNumber` varchar(45) NOT NULL,
@@ -58,3 +67,4 @@ CREATE TABLE `counterparty` (
 ALTER TABLE `paragon` ADD COLUMN `price` DECIMAL(10,3) NULL  AFTER `order_id` ;
 ALTER TABLE `paragon` ADD COLUMN `downloaded` TINYINT(4) NULL DEFAULT 0  AFTER `price` ;
 ALTER TABLE `paragon_item` ADD COLUMN `zestav` tinyint(4) NULL DEFAULT 0 AFTER `shortName`;
+ALTER TABLE `warehouse_item` ADD COLUMN `box` tinyint(4) NULL DEFAULT 1 AFTER `orderId`;

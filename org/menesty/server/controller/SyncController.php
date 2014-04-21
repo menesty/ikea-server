@@ -1,4 +1,5 @@
 <?php
+include_once(Configuration::get()->getClassPath() . "AbstractController.php");
 include_once(Configuration::get()->getClassPath() . "service/WarehouseService.php");
 
 /**
@@ -6,7 +7,7 @@ include_once(Configuration::get()->getClassPath() . "service/WarehouseService.ph
  * Date: 12/28/13
  * Time: 6:13 PM
  */
-class SyncController {
+class SyncController extends AbstractController{
 
     public function __construct() {
         echo __FILE__ . "<br />";
@@ -16,11 +17,6 @@ class SyncController {
         var_dump(json_decode($this->readStreamData()));
 
         //before update
-    }
-
-
-    private function readStreamData() {
-        return file_get_contents('php://input');
     }
 
     /**
@@ -41,4 +37,8 @@ class SyncController {
 
         $warehouseItemService->insertData($jsonData);
     }
-} 
+
+    public function defaultAction(){
+    }
+
+}

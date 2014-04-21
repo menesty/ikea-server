@@ -29,7 +29,7 @@ class WarehouseService {
 
     public function loadStoreItem($productNumber) {
         $connection = Database::get()->getConnection();
-        $st = $connection->prepare('SELECT item.`productId`, w.`productNumber`,w.`price`, sum(w.`count`) as `count` ,item.`weight`, item.`zestav`,item.`shortName`,w.`allowed`,item.`orderId`, w.`visible` from warehouse w left join warehouse_item item on(w.`productNumber` = item.`productNumber`) where w.`productNumber` = :productNumber and w.visible = 1 and w.allowed = 1  group by w.`productNumber`, w.`visible`, w.`allowed`, w.`price` having sum(w.`count`) > 0 limit 1;');
+        $st = $connection->prepare('SELECT item.`productId`, w.`productNumber`,w.`price`, sum(w.`count`) as `count` ,item.`weight`, item.`zestav`,item.`shortName`,w.`allowed`,item.`orderId`, w.`visible`, item.`box` from warehouse w left join warehouse_item item on(w.`productNumber` = item.`productNumber`) where w.`productNumber` = :productNumber and w.visible = 1 and w.allowed = 1  group by w.`productNumber`, w.`visible`, w.`allowed`, w.`price` having sum(w.`count`) > 0 limit 1;');
         $st->bindParam("productNumber", $productNumber);
         $st->setFetchMode(PDO::FETCH_CLASS, 'WarehouseItem');
         $st->execute();
@@ -62,7 +62,7 @@ class WarehouseService {
 
     private function insertWarehouseItem(array &$items) {
         $connection = Database::get()->getConnection();
-        $st = $connection->prepare("INSERT INTO warehouse_item (`productId`,`productNumber`,`weight`,`zestav`,`shortName`,`orderId`) VALUES (:productId, :productNumber, :weight, :zestav, :shortName, :orderId)");
+        $st = $connection->prepare("INSERT INTO warehouse_item (`productId`,`productNumber`,`weight`,`zestav`,`shortName`,`orderId`,`box`) VALUES (:productId, :productNumber, :weight, :zestav, :shortName, :orderId, :box)");
         $countSt = $connection->prepare("select count(productNumber) from  warehouse_item where productNumber = :productNumber");
 
         foreach ($items as $item) {
@@ -72,7 +72,12 @@ class WarehouseService {
             $row = $countSt->fetch(PDO::FETCH_NUM);
 
             if ((int)$row[0] == 0) {
-                $data = array("zestav" => (int)$item->zestav, "productId" => $item->productId, "productNumber" => $item->productNumber, "weight" => $item->weight, "shortName" => $item->shortName, "orderId" => $item->orderId);
+                $box = 1;
+
+                if (preg_match('/\((\d+)\)/', $item->productNumber, $result))
+                    $box = $result[1];
+
+                $data = array("zestav" => (int)$item->zestav, "productId" => $item->productId, "productNumber" => $item->productNumber, "weight" => $item->weight, "shortName" => $item->shortName, "orderId" => $item->orderId, "box" => $box);
                 $st->execute($data);
             }
         }
@@ -81,9 +86,24 @@ class WarehouseService {
     private function insertWarehouse(array &$items) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare("INSERT INTO warehouse (`productNumber`,`count`,`price`,`visible`,`allowed`) VALUES (:productNumber, :count, :price, :visible, :allowed)");
+
         foreach ($items as $item) {
             $data = array("visible" => (int)$item->visible, "allowed" => (int)$item->allowed, "productNumber" => $item->productNumber, "count" => $item->count, "price" => $item->price);
             $st->execute($data);
         }
+    }
+
+    public function updateWeight($productId, $box, $weight) {
+        $connection = Database::get()->getConnection();
+        $st = $connection->prepare('SELECT count(productId) FROM warehouse_item_weight where productId = :productId and box = :box');
+        $st->execute(array("productId" => $productId, "box" => $box));
+        $result = $st->fetch(PDO::FETCH_NUM);
+
+        if ((int)$result[0] == 0)
+            $st = $connection->prepare("INSERT INTO warehouse_item_weight (`productId`,`box`,`weight`) VALUES (:productId, :box, :weight)");
+        else
+            $st = $connection->prepare("update warehouse_item_weight set `weight` = :weight where `productId` = :productId and `box` = :box");
+
+        $st->execute(array("productId" => $productId, "box" => $box, "weight" => $weight));
     }
 } 
