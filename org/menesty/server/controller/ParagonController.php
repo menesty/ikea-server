@@ -98,8 +98,8 @@ class ParagonController extends AbstractController {
 
                     if(!((boolean) $paragonItem->zestav)) {
                         $paragonItem->weight = $item->weight;
-                        $paragonItem->box = $item->box;
-                        $paragonItem->productId = $item->productId;
+                        $paragonItem->box = $warehouseItem->box;
+                        $paragonItem->productId = $warehouseItem->productId;
                     }
 
                     $items[] = $paragonItem;
