@@ -66,8 +66,9 @@ class ParagonController extends AbstractController {
         $data = array();
 
         foreach ($ids as $id) {
+            $paragon = $this->paragonService->loadById($id);
             $items = $this->paragonService->loadParagonItems($id);
-            $data[$id] = $this->paragonService->generateEpp($items);
+            $data[($id."_".$paragon->price)] = $this->paragonService->generateEpp($items);
         }
 
         $this->paragonService->sendParagonByEmail($data);
@@ -120,6 +121,10 @@ class ParagonController extends AbstractController {
 
     public function defaultAction() {
         echo json_encode($this->paragonService->loadParagons());
+    }
+
+    public function par(){
+        var_dump($this->paragonService->loadById(10)->price);
     }
 
     /**

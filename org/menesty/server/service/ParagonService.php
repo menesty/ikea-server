@@ -33,6 +33,14 @@ class ParagonService {
         return $st->fetchAll();
     }
 
+    public function loadById($id) {
+        $connection = Database::get()->getConnection();
+        $st = $connection->prepare("select * from paragon where id = :id ");
+        $st->setFetchMode(PDO::FETCH_CLASS, 'Paragon');
+        $st->execute(array("id" => $id));
+        return $st->fetch();
+    }
+
     public function markDownloaded($id) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare("update paragon set downloaded = 1 where `id` = ?");
