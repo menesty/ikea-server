@@ -47,7 +47,7 @@ class WarehouseService {
 
     public function load() {
         $connection = Database::get()->getConnection();
-        $st = $connection->query('SELECT item.`productId`, w.`productNumber`,w.`price`, sum(w.`count`) as `count` ,item.`weight`, item.`zestav`,item.`shortName`,w.`allowed`,item.`orderId`, w.`visible`, if(IFNULL(wiw.weight, -1) > 0, true, false) as checked from warehouse w left join warehouse_item item on(w.`productNumber` = item.`productNumber`) left join warehouse_item_weight wiw on (item.productId=wiw.productId and item.box=wiw.box) group by w.`productNumber`, w.`visible`, w.`allowed`, w.`price` having sum(w.`count`)>0');
+        $st = $connection->query('SELECT item.`productId`, w.`productNumber`,w.`price`, sum(w.`count`) as `count` ,if(IFNULL(wiw.weight, -1) > 0, wiw.weight, item.`weight`) as weight, item.`zestav`,item.`shortName`,w.`allowed`,item.`orderId`, w.`visible`, if(IFNULL(wiw.weight, -1) > 0, true, false) as checked from warehouse w left join warehouse_item item on(w.`productNumber` = item.`productNumber`) left join warehouse_item_weight wiw on (item.productId=wiw.productId and item.box=wiw.box) group by w.`productNumber`, w.`visible`, w.`allowed`, w.`price` having sum(w.`count`)>0');
         $st->setFetchMode(PDO::FETCH_CLASS, 'WarehouseItem');
         return $st->fetchAll();
     }
