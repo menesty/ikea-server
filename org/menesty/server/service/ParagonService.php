@@ -148,7 +148,7 @@ echo <<< EOT
 
 EOT;
 foreach ($items as $item)
-printf("%s,%s,,,%s,%s,%s,,,\"szt . \",\"23\",23.0000,\"23\",23.0000,0.0000,0.0000,,0,,,,0.0000,0,,,0,\"szt . \",0.0000,0.0000,,0,,0,0,,,,,,,,\r\n",($item->zestav? 8: 1), $item->productNumber, $item->shortName, $item->shortName, $item->shortName);
+printf("%s,\"%s\",,,\"%s\",\"%s\",\"%s\",,,\"szt . \",\"23\",23.0000,\"23\",23.0000,0.0000,0.0000,,0,,,,0.0000,0,,,0,\"szt . \",0.0000,0.0000,,0,,0,0,,,,,,,,\r\n",($item->zestav? 8: 1), $item->productNumber, $item->shortName, $item->shortName, $item->shortName);
 echo <<< EOT
 \r
 [NAGLOWEK]\r

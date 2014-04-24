@@ -87,7 +87,7 @@ class ParagonController extends AbstractController {
             $items = array();
 
             foreach ($paragon->items as $item) {
-                $warehouseItem = $this->warehouseService->loadStoreItem($item->productNumber);
+                $warehouseItem = $this->warehouseService->loadStoreItem($item->productNumber, $item->price);
 
                 if ($warehouseItem && $warehouseItem->count >= $item->count) {
                     $paragonItem = new ParagonItem();
