@@ -106,7 +106,8 @@ class ParagonController extends AbstractController {
                     $items[] = $paragonItem;
 
                     $price += ((double)$item->price * (double)$item->count);
-                }
+                } else
+                    error_log($currentParagon->orderId . " :" . json_encode($item), 3, "paragon_skip_items.log");
             }
 
             if (sizeof($items) > 0) {

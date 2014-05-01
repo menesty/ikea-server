@@ -93,15 +93,19 @@ class ParagonService {
             $mail->Password   = $emailAccount[1];            // GMAIL password
 
             $mail->AddAddress('urbano_rider@yahoo.ca', 'Urbano');
+            $mail->AddAddress('orijana.info@gmail.com', 'Orijana');
+
 
             $mail->SetFrom($emailAccount[0], 'Tablet Facture');
 
-            $mail->Subject = 'Paragons generated from system';
+            $mail->Subject = 'Paragons generated from system: ';
             $mail->AltBody = 'Driver pragon!'; // optional - MsgHTML will create an alternate automatically
             $mail->Body = 'Driver pragon!';
 
-            foreach ($paragons as $key => $value)
+            foreach ($paragons as $key => $value) {
                 $mail->AddStringAttachment($value, "paragon_" . $key . ".epp"); // attachment
+                $mail->Subject .= $key . " ";
+            }
 
             $mail->Send();
             echo "Message Sent OK</p>\n";
