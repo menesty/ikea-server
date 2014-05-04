@@ -17,6 +17,9 @@ class ParagonController extends AbstractController {
         $this->paragonService = new ParagonService();
     }
 
+    /**
+     * @Method(POST)
+     */
     public function executeExport() {
         if ($_SERVER['REQUEST_METHOD'] != "POST")
             throw new Exception($_SERVER['REQUEST_METHOD'] . " method not supported");

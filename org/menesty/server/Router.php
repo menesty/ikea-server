@@ -24,13 +24,22 @@ class Router {
 
             $method = new ReflectionMethod($controllerInstance, $action);
 
+            if(!$this->allowRequestMethod($method))
+                throw new Exception("Method not support this type of request");
+
             $params = $this->getMethodPathParams($method, $controllerArg);
             $method->invokeArgs($controllerInstance, $this->getMethodArg($method, $params));
         } catch (Exception $e) {
             //init default IndexController
             echo $e->getMessage() . "<br />";
         }
+    }
 
+    private function allowRequestMethod(ReflectionMethod $method){
+        preg_match('/@Method(.*?)\n/', $method->getDocComment(), $annotations);
+
+        var_dump($annotations);
+        return true;
     }
 
     private function getMethodArg(ReflectionMethod $method, $params){

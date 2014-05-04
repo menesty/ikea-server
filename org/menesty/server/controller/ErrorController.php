@@ -17,4 +17,10 @@ class ErrorController extends AbstractController {
         $data =  $version . ":\n\r". $data;
         error_log($data . "\n\r", 3, "application_errors.log");
     }
+
+    /**
+     * @Method(POST)
+     */
+    public  function test(){
+    }
 } 
