@@ -14,6 +14,7 @@ CREATE TABLE `paragon` (
   `order_id` int(11) DEFAULT NULL,
   `price` decimal(8,2) DEFAULT NULL,
   `downloaded` tinyint(4) DEFAULT '0',
+  `actionId` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -68,3 +69,4 @@ ALTER TABLE `paragon` ADD COLUMN `price` DECIMAL(10,3) NULL  AFTER `order_id` ;
 ALTER TABLE `paragon` ADD COLUMN `downloaded` TINYINT(4) NULL DEFAULT 0  AFTER `price` ;
 ALTER TABLE `paragon_item` ADD COLUMN `zestav` tinyint(4) NULL DEFAULT 0 AFTER `shortName`;
 ALTER TABLE `warehouse_item` ADD COLUMN `box` tinyint(4) NULL DEFAULT 1 AFTER `orderId`;
+ALTER TABLE `paragon` ADD COLUMN `actionId` varchar(45) NULL AFTER `downloaded` ;

@@ -6,5 +6,7 @@
  */
 
 class IndexController{
-
+    function defaultAction(){
+        phpinfo();
+    }
 }

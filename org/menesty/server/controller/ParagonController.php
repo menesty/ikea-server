@@ -17,12 +17,18 @@ class ParagonController extends AbstractController {
         $this->paragonService = new ParagonService();
     }
 
+    public  function test(){
+        $this->paragonService->lock("paragon", "read");
+        $this->paragonService->unlock();
+    }
+
     /**
-     * @Method(POST)
+     * @Method(POST, GET)
      */
     public function executeExport() {
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new Exception($_SERVER['REQUEST_METHOD'] . " method not supported");
+        //lock table paragon for read
+        $this->paragonService->lock(array("paragon", "warehouse", "warehouse_item_weight", "warehouse AS w",
+            "paragon_item", "warehouse_item as item"), array("write", "write", "write", "read", "write", "read"));
 
         $data = $this->readStreamData();
 
@@ -31,7 +37,9 @@ class ParagonController extends AbstractController {
         if (!is_object($json) || !is_array($json->paragons))
             return "";
 
-        $paragonService = new ParagonService();
+        $logData = date("Y-m-d H:i:s") . " : \n\r" . $data . "\n\r";
+        error_log($logData , 3, "execute_export.log");
+
 
         $paragons = (array)$json->paragons;
         $driverId = $json->driverId;
@@ -42,7 +50,7 @@ class ParagonController extends AbstractController {
         if (sizeof($allowedParagons) > 0) {
             $ids = array();
             foreach ($allowedParagons as $paragon) {
-                $paragonService->createParagon($paragon);
+                $this->paragonService->createParagon($paragon);
                 $ids[] = $paragon->id;
 
                 foreach ($paragon->items as $item) {
@@ -57,12 +65,15 @@ class ParagonController extends AbstractController {
                     $item->count = $count;
                     $item->paragonId = $paragon->id;
 
-                    $paragonService->createParagonItem($item);
+                    $this->paragonService->createParagonItem($item);
                 }
             }
 
-            $this->sendToEmail($ids);
+            if (!Configuration::get()->isDevMode())
+                $this->sendToEmail($ids);
         }
+
+        $this->paragonService->unlock();
     }
 
     private function sendToEmail(array $ids) {
@@ -169,6 +180,18 @@ class ParagonController extends AbstractController {
         }
 
         $this->paragonService->deleteById($id);
+    }
+
+    /**
+     * @Path({actionId})
+     */
+    public function check($actionId) {
+        $paragons = $this->paragonService->getByActionId($actionId);
+
+        if (sizeof($paragons) > 0)
+            echo "true";
+        else
+            echo "false";
     }
 
 }

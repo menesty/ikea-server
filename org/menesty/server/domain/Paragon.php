@@ -14,5 +14,5 @@ class Paragon {
     public $order_id;
     public $price;
     public $downloaded;
-
-} 
+    public $actionId;
+}

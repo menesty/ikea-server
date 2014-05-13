@@ -11,6 +11,32 @@ include_once(Configuration::get()->getClassPath() . "domain/Paragon.php");
 
 class ParagonService {
 
+    public function getByActionId($actionId) {
+        $connection = Database::get()->getConnection();
+        $st = $connection->prepare("select * from paragon where actionId = :actionId order by id desc ");
+        $st->setFetchMode(PDO::FETCH_CLASS, 'Paragon');
+        $st->execute(array("actionId" => $actionId));
+
+        return $st->fetchAll();
+    }
+
+    public function lock($tables, $modes) {
+        $connection = Database::get()->getConnection();
+        $lock = "LOCK TABLE ";
+
+        for ($i = 0; $i < sizeof($tables); $i++)
+            $lock .= " " . $tables[$i] . " " . $modes[$i] . ",";
+
+        $lock = trim($lock, ",") . ";";
+
+        $connection->exec($lock);
+    }
+
+    public function unlock() {
+        $connection = Database::get()->getConnection();
+        $connection->exec("UNLOCK TABLES");
+    }
+
     public function createParagon(&$paragon) {
         $connection = Database::get()->getConnection();
         $st = $connection->prepare("INSERT INTO paragon (`driver_id`,`counterparty_id`,`createdDate`,`order_id`, `price`) VALUES (:driver_id, :userId, NOW(), :order_id, :price)");
@@ -98,7 +124,7 @@ class ParagonService {
 
             $mail->SetFrom($emailAccount[0], 'Tablet Facture');
 
-            $mail->Subject = 'Paragons generated from system: ';
+            $mail->Subject = '';
             $mail->AltBody = 'Driver pragon!'; // optional - MsgHTML will create an alternate automatically
             $mail->Body = 'Driver pragon!';
 

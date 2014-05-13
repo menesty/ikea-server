@@ -36,9 +36,16 @@ class Router {
     }
 
     private function allowRequestMethod(ReflectionMethod $method){
-        preg_match('/@Method(.*?)\n/', $method->getDocComment(), $annotations);
+        preg_match('/@Method\((.*?)\)\n/', $method->getDocComment(), $annotations);
 
-        var_dump($annotations);
+        if (sizeof($annotations) > 0) {
+            $current = strtoupper($_SERVER['REQUEST_METHOD']);
+            $allowHttpMethods = explode(",", strtoupper(preg_replace("/[0-9 ]/", "", $annotations[1])));
+
+            if (!in_array($current, $allowHttpMethods))
+                return false;
+        }
+
         return true;
     }
 

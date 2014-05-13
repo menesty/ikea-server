@@ -20,6 +20,7 @@ class SyncController extends AbstractController{
     }
 
     /**
+     * @Method(POST)
      * @Path({clean})
      */
     public function update($clean = false) {
