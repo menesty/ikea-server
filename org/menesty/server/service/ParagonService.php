@@ -39,8 +39,8 @@ class ParagonService {
 
     public function createParagon(&$paragon) {
         $connection = Database::get()->getConnection();
-        $st = $connection->prepare("INSERT INTO paragon (`driver_id`,`counterparty_id`,`createdDate`,`order_id`, `price`) VALUES (:driver_id, :userId, NOW(), :order_id, :price)");
-        $data = array("driver_id" => $paragon->driverId, "userId" => $paragon->userId, "order_id" => $paragon->orderId, "price" => $paragon->price);
+        $st = $connection->prepare("INSERT INTO paragon (`driver_id`,`counterparty_id`,`createdDate`,`order_id`, `price`, `actionId`) VALUES (:driver_id, :userId, NOW(), :order_id, :price, :actionId)");
+        $data = array("driver_id" => $paragon->driverId, "userId" => $paragon->userId, "order_id" => $paragon->orderId, "price" => $paragon->price, "actionId" => $paragon->actionId);
         $st->execute($data);
         $paragon->id = $connection->lastInsertId();
     }

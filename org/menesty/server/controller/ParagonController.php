@@ -43,9 +43,10 @@ class ParagonController extends AbstractController {
 
         $paragons = (array)$json->paragons;
         $driverId = $json->driverId;
+        $actionId = $json->actionId;
 
         //check if product is available
-        $allowedParagons = $this->validatePragons($driverId, $paragons);
+        $allowedParagons = $this->validatePragons($driverId, $actionId, $paragons);
 
         if (sizeof($allowedParagons) > 0) {
             $ids = array();
@@ -88,7 +89,7 @@ class ParagonController extends AbstractController {
         $this->paragonService->sendParagonByEmail($data);
     }
 
-    private function validatePragons($driverId, $paragons) {
+    private function validatePragons($driverId, $actionId, $paragons) {
         $allowedParagons = array();
 
         foreach ($paragons as $paragon) {
@@ -96,6 +97,7 @@ class ParagonController extends AbstractController {
             $currentParagon->driverId = $driverId;
             $currentParagon->userId = $paragon->userId;
             $currentParagon->orderId = $paragon->orderId;
+            $currentParagon->actionId = $actionId;
 
             $price = 0;
             $items = array();
