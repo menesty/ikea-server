@@ -60,7 +60,7 @@ class ParagonController extends AbstractController {
 
                     $this->warehouseService->exportItem($item);
 
-                    if (!((boolean) $item->zestav))
+                    if (!((boolean) $item->zestav) && !is_null($item->weight))
                         $this->warehouseService->updateWeight($item->productId, $item->box, $item->weight);
 
                     $item->count = $count;
@@ -114,7 +114,11 @@ class ParagonController extends AbstractController {
                     $paragonItem->zestav = $warehouseItem->zestav;
 
                     if(!((boolean) $paragonItem->zestav)) {
-                        $paragonItem->weight = $item->weight;
+                        if ((boolean)$item->cheked)
+                            $paragonItem->weight = $item->weight;
+                        else
+                            $paragonItem->weight = null;
+
                         $paragonItem->box = $warehouseItem->box;
                         $paragonItem->productId = $warehouseItem->productId;
                     }
