@@ -1,6 +1,5 @@
 <?php
 include_once(Configuration::get()->getClassPath() . "service/WarehouseService.php");
-include_once(Configuration::get()->getClassPath() . "service/ParagonService.php");
 
 /**
  * User: Menesty
@@ -11,13 +10,14 @@ class StorageController {
     public function __construct() {
     }
 
-    private function readStreamData() {
-        return file_get_contents('php://input');
-    }
-
     public function load() {
         $warehouseItemService = new WarehouseService();
         echo json_encode($warehouseItemService->load());
+    }
+
+    public function clear(){
+        $warehouseItemService = new WarehouseService();
+        $warehouseItemService->clear();
     }
 
 }

@@ -32,9 +32,6 @@ class SyncController extends AbstractController{
             return;
 
         $warehouseItemService = new WarehouseService();
-        //clear order data if exist in db
-        if (sizeof($jsonData) > 0 && $clean)
-            $warehouseItemService->clear();
 
         $warehouseItemService->insertData($jsonData);
     }
