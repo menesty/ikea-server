@@ -17,7 +17,7 @@ class ParagonService {
         $st->setFetchMode(PDO::FETCH_CLASS, 'Paragon');
         $st->execute(array("actionId" => $actionId));
 
-        return $st->fetchAll();
+        return $st->fetch();
     }
 
     public function lock($tables, $modes) {

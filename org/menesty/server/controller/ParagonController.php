@@ -17,11 +17,6 @@ class ParagonController extends AbstractController {
         $this->paragonService = new ParagonService();
     }
 
-    public  function test(){
-        $this->paragonService->lock("paragon", "read");
-        $this->paragonService->unlock();
-    }
-
     /**
      * @Method(POST, GET)
      */
@@ -141,11 +136,7 @@ class ParagonController extends AbstractController {
     }
 
     public function defaultAction() {
-        echo json_encode($this->paragonService->loadParagons());
-    }
-
-    public function par(){
-        var_dump($this->paragonService->loadById(10)->price);
+        return $this->paragonService->loadParagons();
     }
 
     /**
@@ -161,16 +152,15 @@ class ParagonController extends AbstractController {
                 header('Content-Type: text/html; charset=ISO-8859-2');
                 $data = $this->paragonService->generateEpp($items);
 
-                echo mb_convert_encoding($data, "ISO-8859-2", "UTF-8");
-
                 $this->paragonService->markDownloaded($id);
 
+                return mb_convert_encoding($data, "ISO-8859-2", "UTF-8");
                 break;
             case "email" :
                 $this->sendToEmail(array($id));
                 break;
             default :
-                echo json_encode($items);
+                return $items;
         }
     }
 
@@ -180,24 +170,35 @@ class ParagonController extends AbstractController {
     public function cancel($id){
         $items = $this->paragonService->loadParagonItems($id);
 
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $this->warehouseService->deleteBy($item->productNumber, $item->count * -1, $item->price);
             $this->paragonService->deleteItemById($item->id);
         }
 
         $this->paragonService->deleteById($id);
+
+        return true;
+    }
+
+    /**
+     * @Path({actionId})
+     */
+    public function cancelByActionId($actionId){
+        $paragon = $this->paragonService->getByActionId($actionId);
+
+        if (!is_null($paragon))
+            return $this->cancel($paragon->id);
+
+        return false;
     }
 
     /**
      * @Path({actionId})
      */
     public function check($actionId) {
-        $paragons = $this->paragonService->getByActionId($actionId);
+        $paragon = $this->paragonService->getByActionId($actionId);
 
-        if (sizeof($paragons) > 0)
-            echo "true";
-        else
-            echo "false";
+        return is_object($paragon);
     }
 
 }

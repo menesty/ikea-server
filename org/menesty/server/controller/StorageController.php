@@ -12,7 +12,7 @@ class StorageController {
 
     public function load() {
         $warehouseItemService = new WarehouseService();
-        echo json_encode($warehouseItemService->load());
+        return $warehouseItemService->load();
     }
 
     public function clear(){

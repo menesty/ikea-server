@@ -28,7 +28,17 @@ class Router {
                 throw new Exception("Method not support this type of request");
 
             $params = $this->getMethodPathParams($method, $controllerArg);
-            $method->invokeArgs($controllerInstance, $this->getMethodArg($method, $params));
+
+            $result =$method->invokeArgs($controllerInstance, $this->getMethodArg($method, $params));
+
+            if (is_bool($result))
+                echo($result ? "true" : "false");
+            else if (is_object($result) || is_array($result))
+                echo json_encode($result);
+            else if (is_string($result))
+                echo $result;
+
+
         } catch (Exception $e) {
             //init default IndexController
             echo $e->getMessage() . "<br />";

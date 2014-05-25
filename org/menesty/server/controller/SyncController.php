@@ -7,16 +7,10 @@ include_once(Configuration::get()->getClassPath() . "service/WarehouseService.ph
  * Date: 12/28/13
  * Time: 6:13 PM
  */
-class SyncController extends AbstractController{
+class SyncController extends AbstractController {
 
     public function __construct() {
         echo __FILE__ . "<br />";
-    }
-
-    public function view() {
-        var_dump(json_decode($this->readStreamData()));
-
-        //before update
     }
 
     /**
@@ -33,10 +27,14 @@ class SyncController extends AbstractController{
 
         $warehouseItemService = new WarehouseService();
 
+        if ($clean)
+            $warehouseItemService->clear();
+
         $warehouseItemService->insertData($jsonData);
     }
 
     public function defaultAction(){
+
     }
 
 }
