@@ -109,7 +109,7 @@ class ParagonController extends AbstractController {
                     $paragonItem->zestav = $warehouseItem->zestav;
 
                     if(!((boolean) $paragonItem->zestav)) {
-                        if ((boolean)$item->cheked)
+                        if ((boolean)$item->checked)
                             $paragonItem->weight = $item->weight;
                         else
                             $paragonItem->weight = null;
