@@ -45,6 +45,7 @@ class ParagonController extends AbstractController {
 
         if (sizeof($allowedParagons) > 0) {
             $ids = array();
+
             foreach ($allowedParagons as $paragon) {
                 $this->paragonService->createParagon($paragon);
                 $ids[] = $paragon->id;
@@ -74,11 +75,13 @@ class ParagonController extends AbstractController {
 
     private function sendToEmail(array $ids) {
         $data = array();
+        $paragonIndex = 1;
 
         foreach ($ids as $id) {
             $paragon = $this->paragonService->loadById($id);
             $items = $this->paragonService->loadParagonItems($id);
-            $data[($id."_".$paragon->price)] = $this->paragonService->generateEpp($items);
+            $data[("p" . $paragonIndex . "_" . round($paragon->price))] = $this->paragonService->generateEpp($items);
+            $paragonIndex++;
         }
 
         $this->paragonService->sendParagonByEmail($data);
@@ -184,10 +187,13 @@ class ParagonController extends AbstractController {
      * @Path({actionId})
      */
     public function cancelByActionId($actionId){
-        $paragon = $this->paragonService->getByActionId($actionId);
+        $paragons = $this->paragonService->getByActionId($actionId);
 
-        if (!is_null($paragon))
-            return $this->cancel($paragon->id);
+        if (is_array($paragons)) {
+            foreach ($paragons as $paragon)
+                $this->cancel($paragon->id);
+            return true;
+        }
 
         return false;
     }

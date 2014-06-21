@@ -17,7 +17,7 @@ class ParagonService {
         $st->setFetchMode(PDO::FETCH_CLASS, 'Paragon');
         $st->execute(array("actionId" => $actionId));
 
-        return $st->fetch();
+        return $st->fetchAll();
     }
 
     public function lock($tables, $modes) {
@@ -119,7 +119,8 @@ class ParagonService {
             $mail->Password   = $emailAccount[1];            // GMAIL password
 
             $mail->AddAddress('urbano_rider@yahoo.ca', 'Urbano');
-            $mail->AddAddress('orijana.info@gmail.com', 'Orijana');
+            $mail->AddBCC('orijana.info@gmail.com', 'Orijana');
+            $mail->AddBCC('solka126@gmail.com', 'Olga');
 
 
             $mail->SetFrom($emailAccount[0], 'Tablet Facture');
